@@ -1,0 +1,44 @@
+# VCS / editors
+.git
+.gitignore
+.idea
+.vscode
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dev
+node_modules
+vendor
+.phpunit.result.cache
+.phpunit.cache
+tests
+phpunit.xml
+.env
+.env.*
+!.env.production.example
+
+# Build output (we build inside Docker)
+public/build
+public/hot
+
+# Storage (created on first boot, not baked)
+storage/app/public/*
+!storage/app/public/.gitkeep
+storage/framework/cache/data/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/logs/*
+bootstrap/cache/*.php
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Deployment artefacts
+*.zip
+*.tar
+deploy

@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Pre-commit hook: enforce dark-mode coverage in Blade templates.
+#
+# Activate once per clone:
+#   git config core.hooksPath .githooks
+#
+# Skip in an emergency with `git commit --no-verify`. Don't make a habit of it.
+
+set -e
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
+
+# Only lint *staged* blade files so the hook is fast and only blocks new
+# violations. Falls back to a full scan if no blade files were staged.
+STAGED_BLADE=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.blade\.php$' || true)
+
+if [ -z "$STAGED_BLADE" ]; then
+  exit 0
+fi
+
+# Pass the staged files explicitly so the lint matches what's about to land.
+# shellcheck disable=SC2086
+php scripts/lint-dark-mode.php $STAGED_BLADE

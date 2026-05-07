@@ -1,0 +1,53 @@
+services:
+  app:
+    build:
+      context: .
+    image: projectstatus:latest
+    container_name: projectstatus-app
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:54322:8080"
+    volumes:
+      - ./data/storage:/app/storage
+    networks:
+      - projectstatus
+
+  db:
+    image: mysql:8.4
+    container_name: projectstatus-db
+    restart: unless-stopped
+    # No `ports:` — MySQL is NOT published to the host.
+    # `3306/tcp, 33060/tcp` shown by `docker ps` are EXPOSE declarations
+    # from the mysql:8.4 image, reachable only on the internal
+    # `projectstatus` bridge network (i.e. only the `app` container).
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+    networks:
+      - projectstatus
+
+networks:
+  projectstatus:
+    driver: bridge
