@@ -23,7 +23,7 @@ class SeederTest extends TestCase
 
     public function test_seeder_creates_admin_user(): void
     {
-        $admin = User::where('email', 'ana@firma.hr')->first();
+        $admin = User::where('email', 'sarah@example.com')->first();
 
         $this->assertNotNull($admin);
         $this->assertTrue((bool) $admin->is_admin);
