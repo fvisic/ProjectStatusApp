@@ -57,7 +57,7 @@ class DashboardTest extends TestCase
             ->assertSee(__('dashboard.total_projects'))
             ->assertSee(__('dashboard.health_overview'))
             ->assertSee(__('dashboard.estimation_total'))
-            ->assertSee('Forecast delta');
+            ->assertSee(__('dashboard.forecast_delta'));
     }
 
     public function test_dashboard_shows_alert_for_at_risk_projects(): void
