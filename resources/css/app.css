@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Native date/time picker icon is black by default — invert it in dark mode
+   so it stays visible on dark input backgrounds. */
+.dark input[type="date"]::-webkit-calendar-picker-indicator,
+.dark input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+.dark input[type="time"]::-webkit-calendar-picker-indicator,
+.dark input[type="month"]::-webkit-calendar-picker-indicator,
+.dark input[type="week"]::-webkit-calendar-picker-indicator {
+    filter: invert(1) brightness(0.8);
+    cursor: pointer;
+}
+
+/* Subtle, theme-aware scrollbars. The browser default is a thick light bar
+   that obscures content inside dashboard widgets like "Projects needing
+   attention" and "Upcoming go-lives" in dark mode. */
+@supports (scrollbar-width: thin) {
+    * { scrollbar-width: thin; }
+    .dark * { scrollbar-color: #4b5563 #1f2937; } /* gray-600 on gray-800 */
+}
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+    background: #d1d5db; /* gray-300 */
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover { background: #9ca3af; /* gray-400 */ }
+.dark ::-webkit-scrollbar-thumb { background: #4b5563; /* gray-600 */ }
+.dark ::-webkit-scrollbar-thumb:hover { background: #6b7280; /* gray-500 */ }

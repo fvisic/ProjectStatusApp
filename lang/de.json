@@ -1,0 +1,20 @@
+{
+    "Email": "E-Mail",
+    "Password": "Passwort",
+    "Confirm Password": "Passwort bestätigen",
+    "Remember me": "Angemeldet bleiben",
+    "Forgot your password?": "Passwort vergessen?",
+    "Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.": "Passwort vergessen? Kein Problem. Teilen Sie uns einfach Ihre E-Mail-Adresse mit und wir senden Ihnen einen Link zum Zurücksetzen des Passworts, mit dem Sie ein neues wählen können.",
+    "Email Password Reset Link": "Link zum Zurücksetzen senden",
+    "Reset Password": "Passwort zurücksetzen",
+    "Log in": "Anmelden",
+    "Log Out": "Abmelden",
+    "Name": "Name",
+    "Already registered?": "Bereits registriert?",
+    "Register": "Registrieren",
+    "Confirm": "Bestätigen",
+    "This is a secure area of the application. Please confirm your password before continuing.": "Dies ist ein geschützter Bereich der Anwendung. Bitte bestätigen Sie Ihr Passwort, bevor Sie fortfahren.",
+    "A new verification link has been sent to the email address you provided during registration.": "Ein neuer Bestätigungslink wurde an die bei der Registrierung angegebene E-Mail-Adresse gesendet.",
+    "Resend Verification Email": "Bestätigungs-E-Mail erneut senden",
+    "Saved.": "Gespeichert."
+}

@@ -1,0 +1,20 @@
+{
+    "Email": "E-pošta",
+    "Password": "Lozinka",
+    "Confirm Password": "Potvrdi lozinku",
+    "Remember me": "Zapamti me",
+    "Forgot your password?": "Zaboravili ste lozinku?",
+    "Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.": "Zaboravili ste lozinku? Nema problema. Samo nam pošaljite svoju e-poštu i poslat ćemo vam poveznicu za promjenu lozinke.",
+    "Email Password Reset Link": "Pošalji poveznicu za resetiranje lozinke",
+    "Reset Password": "Postavi novu lozinku",
+    "Log in": "Prijava",
+    "Log Out": "Odjava",
+    "Name": "Ime",
+    "Already registered?": "Već imate račun?",
+    "Register": "Registracija",
+    "Confirm": "Potvrdi",
+    "This is a secure area of the application. Please confirm your password before continuing.": "Ovo je zaštićeno područje aplikacije. Molimo potvrdite lozinku prije nastavka.",
+    "A new verification link has been sent to the email address you provided during registration.": "Nova poveznica za potvrdu poslana je na e-poštu koju ste naveli pri registraciji.",
+    "Resend Verification Email": "Ponovno pošalji potvrdnu e-poštu",
+    "Saved.": "Spremljeno."
+}
