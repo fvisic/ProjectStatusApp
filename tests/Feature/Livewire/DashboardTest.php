@@ -38,7 +38,7 @@ class DashboardTest extends TestCase
     {
         Livewire::actingAs($this->user)
             ->test(Dashboard::class)
-            ->assertSee('Dobrodošli u Project Status')
+            ->assertSee(__('dashboard.welcome'))
             ->assertSee(__('projects.new_project'));
     }
 
@@ -54,9 +54,9 @@ class DashboardTest extends TestCase
 
         Livewire::actingAs($this->user)
             ->test(Dashboard::class)
-            ->assertSee('Ukupno projekata')
-            ->assertSee('Health pregled')
-            ->assertSee('Estimacija (ukupno)')
+            ->assertSee(__('dashboard.total_projects'))
+            ->assertSee(__('dashboard.health_overview'))
+            ->assertSee(__('dashboard.estimation_total'))
             ->assertSee('Forecast delta');
     }
 
@@ -85,7 +85,7 @@ class DashboardTest extends TestCase
         Livewire::actingAs($this->user)
             ->test(Dashboard::class)
             ->assertSee('Late Project')
-            ->assertSee('KASNI');
+            ->assertSee(__('dashboard.overdue'));
     }
 
     public function test_dashboard_shows_upcoming_go_lives(): void
@@ -112,7 +112,7 @@ class DashboardTest extends TestCase
         Livewire::actingAs($this->user)
             ->test(Dashboard::class)
             ->assertDontSee('Other Project')
-            ->assertSee('Dobrodošli u Project Status');
+            ->assertSee(__('dashboard.welcome'));
     }
 
     public function test_dashboard_shows_estimation_overrun(): void
@@ -141,6 +141,6 @@ class DashboardTest extends TestCase
         Livewire::actingAs($this->user)
             ->test(Dashboard::class)
             ->assertSee('Activity Project')
-            ->assertSee('Nedavna aktivnost');
+            ->assertSee(__('dashboard.recent_activity'));
     }
 }
