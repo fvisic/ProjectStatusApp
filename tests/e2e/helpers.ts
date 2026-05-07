@@ -2,13 +2,13 @@ import { Page, expect } from '@playwright/test';
 
 /**
  * Seeded credentials (see DatabaseSeeder).
- * All seeded users share the password `password`.
+ * All seeded users share the password `Demo1234!`.
  */
 export const USERS = {
-    admin:   { email: 'ana@firma.hr',   password: 'password', name: 'Ana Kovačević',  role: 'admin'   },
-    manager: { email: 'marko@firma.hr', password: 'password', name: 'Marko Horvat',   role: 'manager' },
-    user:    { email: 'ivan@firma.hr',  password: 'password', name: 'Ivan Novak',     role: 'user'    },
-    user2:   { email: 'petra@firma.hr', password: 'password', name: 'Petra Jurić',    role: 'user'    },
+    admin:   { email: 'sarah@example.com', password: 'Demo1234!', name: 'Sarah Chen',   role: 'admin'   },
+    manager: { email: 'james@example.com', password: 'Demo1234!', name: 'James Miller', role: 'manager' },
+    user:    { email: 'priya@example.com', password: 'Demo1234!', name: 'Priya Sharma', role: 'user'    },
+    user2:   { email: 'tom@example.com',   password: 'Demo1234!', name: 'Tom Weber',    role: 'user'    },
 } as const;
 
 export type SeededUser = keyof typeof USERS;
