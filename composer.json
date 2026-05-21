@@ -9,6 +9,7 @@
         "php": "^8.3",
         "bacon/bacon-qr-code": "^3.1",
         "barryvdh/laravel-dompdf": "^3.1",
+        "codebar-ag/laravel-microsoft-entra-sso": "^13.2",
         "fakerphp/faker": "^1.23",
         "laragear/webauthn": "^5.0",
         "laravel/framework": "^13.0",

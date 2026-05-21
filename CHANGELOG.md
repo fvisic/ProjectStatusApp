@@ -11,6 +11,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.0] — 2026-05-21
+
+### Added
+- Microsoft Entra ID (Azure AD) SSO via `codebar-ag/laravel-microsoft-entra-sso` v13.2.0
+- "Sign in with Microsoft" button on the login page — renders only when `MICROSOFT_ENTRA_SSO_TENANT_ID`, `_CLIENT_ID`, and `_CLIENT_SECRET` are configured, so existing deployments are unaffected until SSO is opted into
+- `microsoft_sso_identities` table (morph-linked to `users`) storing Microsoft tokens and the linked Entra object ID
+- `App\Models\User` now implements `SSOAuthenticatable` and uses the `HasMicrosoftSSO` trait — first SSO login matches by `email` and links to the existing account, or auto-creates a verified user
+- `.env.example` and `.env.production.example` document the four `MICROSOFT_ENTRA_SSO_*` variables; redirect URI defaults to `${APP_URL}/sso/microsoft/web/callback`
+
+### Notes
+- Without Azure credentials set, `php artisan route:list` and direct access to `/sso/microsoft/*` return errors because the upstream package validates config in the service constructor. Normal app traffic is unaffected; the login button hides the SSO routes from users until credentials are configured.
+
+---
+
 ## [1.0.1] — 2026-05-07
 
 ### Changed
@@ -49,6 +63,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Manager read-only view for projects they did not create
 - Username field on registration form
 
-[Unreleased]: https://github.com/fvisic/ProjectStatusApp/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/fvisic/ProjectStatusApp/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/fvisic/ProjectStatusApp/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/fvisic/ProjectStatusApp/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/fvisic/ProjectStatusApp/releases/tag/v1.0.0

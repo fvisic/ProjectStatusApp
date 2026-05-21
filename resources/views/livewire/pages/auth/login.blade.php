@@ -127,4 +127,29 @@ new #[Layout('layouts.guest')] class extends Component
         </button>
         <p x-show="error" x-text="error" class="mt-2 text-sm text-red-600 dark:text-red-400"></p>
     </div>
+
+    @php
+        $hasSsoCredentials = config('microsoft-entra-sso.client_id')
+            && config('microsoft-entra-sso.client_secret')
+            && config('microsoft-entra-sso.tenant_id');
+    @endphp
+
+    @if ($hasSsoCredentials)
+        <div class="mt-6">
+            <div class="relative">
+                <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                    <div class="w-full border-t border-gray-300 dark:border-gray-600"></div>
+                </div>
+                <div class="relative flex justify-center text-xs">
+                    <span class="bg-white dark:bg-gray-800 px-2 text-gray-500 dark:text-gray-400">
+                        {{ __('Or') }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <x-microsoft-entra-sso::sso-button guard="web" />
+            </div>
+        </div>
+    @endif
 </div>

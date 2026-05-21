@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2e1b0cf5aedf04c6652ba6a4ad327999",
+    "content-hash": "d27f070c1c6ab1eed474ddcee0acb08f",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -266,6 +266,82 @@
                 }
             ],
             "time": "2024-02-09T16:56:22+00:00"
+        },
+        {
+            "name": "codebar-ag/laravel-microsoft-entra-sso",
+            "version": "v13.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/codebar-ag/laravel-microsoft-entra-sso.git",
+                "reference": "3623e613b54e866d6e8e837707ad3cb3ebad2669"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/codebar-ag/laravel-microsoft-entra-sso/zipball/3623e613b54e866d6e8e837707ad3cb3ebad2669",
+                "reference": "3623e613b54e866d6e8e837707ad3cb3ebad2669",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "^13.0",
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "illuminate/support": "^13.0",
+                "php": "8.3.*|8.4.*|8.5.*"
+            },
+            "require-dev": {
+                "larastan/larastan": "^3.9",
+                "laravel/pint": "^1.21",
+                "orchestra/testbench": "^11.0",
+                "pestphp/pest": "^4.0",
+                "pestphp/pest-plugin-laravel": "^4.0",
+                "phpstan/phpstan": "^2.1"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "MicrosoftEntraSSO": "CodebarAg\\MicrosoftEntraSSO\\Facades\\MicrosoftEntraSSO"
+                    },
+                    "providers": [
+                        "CodebarAg\\MicrosoftEntraSSO\\MicrosoftEntraSSOServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "CodebarAg\\MicrosoftEntraSSO\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian Bürgin-Fix",
+                    "email": "helpdesk@codebar.ch",
+                    "homepage": "https://www.codebar.ch",
+                    "role": "Software-Engineer"
+                }
+            ],
+            "description": "Microsoft Entra ID SSO authentication for Laravel via OAuth2 + OIDC",
+            "homepage": "https://github.com/codebar-ag/laravel-microsoft-entra-sso",
+            "keywords": [
+                "SSO",
+                "azure-ad",
+                "codebar-ag",
+                "entra",
+                "entra-id",
+                "laravel",
+                "microsoft",
+                "oauth2",
+                "oidc"
+            ],
+            "support": {
+                "issues": "https://github.com/codebar-ag/laravel-microsoft-entra-sso/issues",
+                "source": "https://github.com/codebar-ag/laravel-microsoft-entra-sso/tree/v13.2.0"
+            },
+            "time": "2026-04-13T10:44:07+00:00"
         },
         {
             "name": "composer/pcre",

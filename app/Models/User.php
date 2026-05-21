@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use CodebarAg\MicrosoftEntraSSO\Contracts\SSOAuthenticatable;
+use CodebarAg\MicrosoftEntraSSO\Traits\HasMicrosoftSSO;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -14,10 +16,10 @@ use Laragear\WebAuthn\WebAuthnAuthentication;
 
 #[Fillable(['name', 'username', 'email', 'password', 'locale', 'is_admin', 'role', 'slack_webhook_url', 'has_completed_onboarding', 'two_factor_secret', 'two_factor_recovery_codes', 'two_factor_confirmed_at', 'is_disabled'])]
 #[Hidden(['password', 'remember_token', 'two_factor_secret', 'two_factor_recovery_codes'])]
-class User extends Authenticatable implements WebAuthnAuthenticatable
+class User extends Authenticatable implements SSOAuthenticatable, WebAuthnAuthenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, WebAuthnAuthentication;
+    use HasFactory, HasMicrosoftSSO, Notifiable, WebAuthnAuthentication;
 
     public const ROLE_ADMIN = 'admin';
     public const ROLE_MANAGER = 'manager';
