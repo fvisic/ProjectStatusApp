@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.6
 # ---------- Stage 1: Frontend build (Vite + Tailwind + Chart.js) ----------
-FROM node:22-alpine AS assets
+FROM node:24-alpine AS assets
 WORKDIR /build
 COPY package.json package-lock.json* ./
 # Use `npm install` (not `ci`) because optional platform-specific deps
