@@ -26,11 +26,11 @@ What actually happened. Include error messages, screenshots, or logs if relevant
 
 ## Environment
 
-- Version: [e.g. v1.0.0]
+- Version: [e.g. v1.1.0]
 - Deployment: [Docker / bare metal]
-- PHP version: [e.g. 8.3]
+- PHP version: [e.g. 8.4]
 - Browser: [e.g. Chrome 124]
-- OS: [e.g. Ubuntu 22.04]
+- OS: [e.g. Ubuntu 24.04]
 
 ## Additional context
 

@@ -52,7 +52,7 @@ It's not a Jira replacement. It runs alongside it — one tab for your ticket ba
 
 | Layer     | Technology                           |
 |-----------|--------------------------------------|
-| Backend   | PHP 8.3+, Laravel 13                 |
+| Backend   | PHP 8.4, Laravel 13                  |
 | Frontend  | Livewire 3, Tailwind CSS 3, Alpine.js|
 | Charts    | Chart.js 4                           |
 | Database  | MySQL 8.4                            |
@@ -81,66 +81,58 @@ It's not a Jira replacement. It runs alongside it — one tab for your ticket ba
 
 ## Codebase Statistics
 
-*Last updated: 2026-04-15*
+*Last updated: 2026-05-22*
 
 ### Custom PHP Classes (app/)
 
 | Directory           | Files | Description              |
 |---------------------|------:|--------------------------|
-| Livewire            |    15 | Livewire components      |
-| Models              |     7 | Eloquent models          |
-| Http (Controllers)  |     7 | Controllers, middleware  |
-| Console             |     3 | Artisan commands         |
+| Livewire            |    16 | Livewire components, forms, actions |
+| Models              |     8 | Eloquent models          |
+| Http                |     8 | Controllers, middleware  |
+| Console             |     4 | Artisan commands         |
 | Notifications       |     2 | Email/DB notifications   |
 | View                |     2 | View components          |
 | Providers           |     2 | Service providers        |
 | Policies            |     1 | Authorization policies   |
 | Exports             |     1 | Excel exports            |
 | Channels            |     1 | Broadcast channels       |
-| **Total**           | **42**| **2,645 lines**          |
+| **Total**           | **45**| **2,877 lines**          |
 
 ### Full Project Breakdown
 
 | Category                          | Files | Lines  |
 |-----------------------------------|------:|-------:|
-| Application code (app/)           |    42 |  2,645 |
-| Blade templates                   |    49 |  4,909 |
-| Database (migrations, seeders, factories) | 22 | 1,261 |
-| Tests (PHPUnit)                   |    33 |  5,388 |
-| Tests (Playwright E2E)            |    17 |    497 |
-| Routes                            |     1 |    105 |
-| Config                            |     - |  1,423 |
-| Translations (3 languages)        |    31 |  2,885 |
-| JavaScript                        |     - |    550 |
-| CSS                               |     1 |     31 |
-| **Total**                         |       | **19,694** |
+| Application code (app/)           |    45 |  2,877 |
+| Blade templates                   |    54 |  5,645 |
+| Database (migrations + factories + seeders) | 22 |  ~1,300 |
+| Tests (PHPUnit)                   |    35 |  5,755 |
+| Tests (Playwright E2E)            |    17 |    628 |
 
 ### Key Metrics
 
 | Metric                           | Value |
 |----------------------------------|------:|
-| Custom PHP classes               |    42 |
-| Custom PHP lines of code         | 2,645 |
-| Blade templates                  |    49 |
-| Database migrations              |    19 |
-| Eloquent models                  |     7 |
-| Livewire components              |    15 |
-| PHPUnit test files               |    33 |
-| PHPUnit test methods             |   345 |
+| Custom PHP classes               |    45 |
+| Custom PHP lines of code         | 2,877 |
+| Blade templates                  |    54 |
+| Database migrations              |    22 |
+| Eloquent models                  |     8 |
+| Livewire components              |    14 |
+| PHPUnit test files               |    35 |
+| PHPUnit test methods             |   367 |
 | Playwright E2E specs             |    17 |
-| Playwright E2E test cases        |    41 |
-| Translation keys (per language)  |  ~700 |
+| Translation files (incl. JSON)   |    37 |
 | Supported languages              |     3 |
-| Total project lines of code      | 19,694|
+| Auth methods                     |     4 (password, TOTP 2FA, WebAuthn passkey, Microsoft Entra SSO) |
 
-## Offline Deployment
+## Deployment
 
-See [INSTALL.md](INSTALL.md) for the complete offline Docker distribution guide, including:
-- Quick start (3 steps)
-- Docker installation for Linux/Windows/macOS
-- LAN access and firewall configuration
-- HTTPS setup (Let's Encrypt, self-signed, Caddy)
-- Backup and restore
+See [INSTALL.md](INSTALL.md) for the complete deployment guide covering both:
+- **Direct pull from GHCR** for servers with internet at install time
+- **Offline tarball** for air-gapped targets (includes how to create the bundle on a separate workstation)
+
+The guide also covers Docker installation for Linux/Windows/macOS, LAN access and firewall configuration, HTTPS setup (Let's Encrypt, self-signed, Caddy), and backup and restore. For the abbreviated GHCR path, see [QUICKSTART.md](QUICKSTART.md).
 
 ## WebAuthn / Passkeys in Offline Mode
 
@@ -218,7 +210,7 @@ Open `.env` and set the following values:
 
 ```env
 APP_NAME="Project Status"
-APP_KEY=        # generate: docker run --rm php:8.3-cli php -r "echo 'base64:'.base64_encode(random_bytes(32)).PHP_EOL;"
+APP_KEY=        # generate: docker run --rm php:8.4-cli php -r "echo 'base64:'.base64_encode(random_bytes(32)).PHP_EOL;"
 APP_URL=http://localhost:54322
 
 DB_DATABASE=project_status

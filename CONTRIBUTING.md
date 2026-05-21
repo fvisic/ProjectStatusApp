@@ -21,7 +21,7 @@ php artisan migrate --seed
 npm run dev
 ```
 
-PHP 8.2+, Node 20+, and a MySQL/MariaDB database are required. See [INSTALL.md](INSTALL.md) for full prerequisites.
+PHP 8.4 (the Dockerfile + `composer.json` `config.platform.php` are pinned to 8.4), Node 22+ (24 used in the Docker assets stage), and a MySQL/MariaDB database are required. See [INSTALL.md](INSTALL.md) for full prerequisites.
 
 ## How to Contribute
 

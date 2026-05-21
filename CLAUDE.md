@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Stack
 
-Laravel 13 + Livewire 3 + Volt + Alpine + Tailwind 3 + Chart.js. PHP 8.3+ (CI runs 8.4). MySQL 8.4 in production; SQLite for tests and E2E. Auth: TOTP 2FA (pragmarx/google2fa) + WebAuthn passkeys (laragear/webauthn). Excel via maatwebsite, PDFs via barryvdh/laravel-dompdf.
+Laravel 13 + Livewire 3 + Volt + Alpine + Tailwind 3 + Chart.js. PHP **pinned to 8.4** in Dockerfile *and* `composer.json` `config.platform.php` — CI and prod both run 8.4. MySQL 8.4 in production; SQLite for tests and E2E. Asset build uses Node 24 (Vite 8) in the Docker assets stage. Auth: password, TOTP 2FA (pragmarx/google2fa), WebAuthn passkeys (laragear/webauthn), Microsoft Entra ID SSO (codebar-ag/laravel-microsoft-entra-sso). Excel via maatwebsite, PDFs via barryvdh/laravel-dompdf.
 
 ## Commands
 
@@ -42,6 +42,13 @@ Activate the pre-commit hook once per clone: `git config core.hooksPath .githook
 - `createSnapshot($userId, $changeNote)` is the canonical way to record history — it materializes phases/risks/nextSteps into `snapshot_data`. `ProjectHistory` diffs these.
 
 **i18n**: three locales (`hr`, `en`, `de`) in `lang/`. `SetLocale` middleware reads `session('locale')` first, then `user->locale`, only accepts the three known codes. Plus root-level JSON files for flat strings. Both must be updated when adding strings.
+
+**Microsoft Entra ID SSO** (opt-in, gated by env vars):
+- Package: `codebar-ag/laravel-microsoft-entra-sso` v13.x. The service provider auto-registers two routes via `loadRoutesFrom`: `GET /sso/microsoft/{guard}/redirect` (`microsoft-entra-sso.redirect`) and `GET /sso/microsoft/{guard}/callback` (`microsoft-entra-sso.callback`). The `EnsureSSOEnabled` middleware on those routes returns 503 if any of tenant/client/secret/redirect env vars are missing.
+- `App\Models\User` implements `SSOAuthenticatable` and uses the `HasMicrosoftSSO` trait — first SSO login looks up by `email`, links to existing user if found, otherwise auto-creates a verified user (`auto_register: true` default in `config/microsoft-entra-sso.php`).
+- New table `microsoft_sso_identities`: morph-linked back to `users`, stores Microsoft object ID + access / refresh tokens + expiry. Migration lives in the package vendor (`vendor/codebar-ag/laravel-microsoft-entra-sso/database/migrations/`), Laravel discovers it via `loadMigrationsFrom`. Don't expect to see it in `database/migrations/`.
+- Login Blade view (`resources/views/livewire/pages/auth/login.blade.php`) wraps the `<x-microsoft-entra-sso::sso-button>` component in an `@if(config(...))` server-side gate so the button is invisible when credentials aren't set — existing email / passkey / 2FA UI is unaffected.
+- **Known package quirk**: the service constructor validates credentials greedily, so `php artisan route:list` and direct hits to `/sso/microsoft/*` throw `SSOException::configurationMissing` instead of returning a clean 503 when env vars are unset. Doesn't affect normal traffic because the UI gate hides the routes until SSO is opted in.
 
 **Scheduled work** (`routes/console.php`): `projects:send-alerts` daily at 08:00, `projects:weekly-report` Mondays at 07:00. Requires a real scheduler / queue worker — `composer dev` runs `queue:listen`.
 

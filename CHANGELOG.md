@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Docker assets stage bumped from `node:22-alpine` to `node:24-alpine` (Node 24 LTS). Vite 8 / Tailwind / Chart.js all compatible.
+- GitHub Actions: `actions/checkout@v4` → `@v5` in both `ci.yml` and `docker.yml`. `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true` env added so docker-org actions still on Node 20 are forced onto Node 24 ahead of the June 2026 deprecation.
+- Documentation refreshed: README/INSTALL/QUICKSTART get badges (release, license, CI status, Docker status, tests, stack versions, multi-arch, i18n, auth methods); SSO setup walkthrough added in all three; INSTALL no longer falsely claims ARM is unsupported and now documents both GHCR-pull and offline-bundle paths; offline tarball creation steps added.
+
+### Validated by pre-release
+- `v1.2.0-rc.1` tagged for CI build chain validation (native arm64 runner + Node 24 + actions@v5). All checks green, image published to `ghcr.io/fvisic/projectstatusapp:1.2.0-rc.1` without touching `:latest`.
+
 ---
 
 ## [1.1.0] — 2026-05-22

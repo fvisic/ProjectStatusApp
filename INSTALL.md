@@ -3,27 +3,25 @@
 ## Requirements
 
 - **OS:** Linux (Debian/Ubuntu recommended), Windows with Docker Desktop, or macOS
-- **Architecture:** x86_64 (amd64) - the bundled images are built for this architecture
+- **Architecture:** x86_64 (amd64) **or** arm64 — the published image is multi-arch (amd64 + arm64). Mac M1/M2/M3, AWS Graviton, Raspberry Pi 4/5 are all supported.
 - **Docker Engine:** 24.0+ with Docker Compose plugin (v2)
 - **Disk:** ~500 MB free (images + database)
 - **RAM:** 1 GB minimum, 2 GB recommended
-- **No internet required** - all images are included in this package
+- **Internet:** only needed at first pull (or for the optional Microsoft Entra SSO). Once images are local, the app runs entirely offline.
 
-### Check your architecture
+### Two distribution modes
 
-The bundled Docker images only work on x86_64 (amd64) machines. Before starting, verify your architecture:
+This guide covers both ways to install:
 
-```bash
-# Linux / macOS
-uname -m
-# Expected output: x86_64
+1. **Direct pull from GHCR** (recommended when the server has internet at install time)
+   ```bash
+   docker compose pull
+   docker compose up -d
+   ```
+   See [QUICKSTART.md](QUICKSTART.md) for the abbreviated version of this path.
 
-# Windows (PowerShell)
-echo $env:PROCESSOR_ARCHITECTURE
-# Expected output: AMD64
-```
-
-If you see `aarch64`, `arm64`, or `ARM` - these images will not work. Contact the vendor for an ARM-compatible build.
+2. **Offline tarball** (for air-gapped servers — bundle once on a machine with internet, install on the offline target)
+   - Step-by-step bundle creation is in the **[Creating an offline bundle](#creating-an-offline-bundle)** section below.
 
 ### Install Docker (if not already installed)
 
@@ -68,45 +66,44 @@ For Ubuntu, replace `debian` with `ubuntu` in the repository URL above.
 
 ## Quick Start
 
-### Linux / macOS
+### Path A — Direct pull from GHCR (server has internet)
 
 ```bash
-# 1. Extract the package
-tar xzf projectstatus-offline.tar.gz
-cd projectstatus-offline
+# 1. Clone (or download just docker-compose.yml + .env.production.example — see QUICKSTART.md)
+git clone https://github.com/fvisic/ProjectStatusApp.git
+cd ProjectStatusApp
 
-# 2. Run the installer
-chmod +x start.sh
-./start.sh
+# 2. Configure
+cp .env.production.example .env
+$EDITOR .env                          # set APP_KEY, DB_PASSWORD, DB_ROOT_PASSWORD, APP_URL
 
-# 3. Open in browser
-# http://localhost:8080
-```
-
-### Windows (PowerShell)
-
-```powershell
-# 1. Extract the package (use 7-Zip or WSL for .tar.gz)
-# With 7-Zip: right-click projectstatus-offline.tar.gz -> Extract Here (twice)
-# Or in WSL: tar xzf projectstatus-offline.tar.gz
-
-# 2. Open PowerShell in the extracted folder
-cd projectstatus-offline
-
-# 3. Start the services
+# 3. Pull the latest stable image + start
+docker compose pull
 docker compose up -d
 
 # 4. Open in browser
-# http://localhost:8080
+# http://localhost:54322 (or whatever APP_URL you set)
 ```
 
-**Note:** On Windows, `start.sh` will not run natively. The script only loads Docker images and runs `docker compose up -d`. You can load images manually:
+### Path B — Offline tarball (air-gapped target)
 
-```powershell
+```bash
+# 1. Extract the bundle prepared on a machine with internet
+tar xzf projectstatus-offline.tar.gz
+cd projectstatus-offline
+
+# 2. Load the images into the local Docker daemon
 docker load -i projectstatus-app.tar.gz
 docker load -i mysql-8.4.tar.gz
+
+# 3. Start
 docker compose up -d
+
+# 4. Open in browser
+# http://localhost:54322
 ```
+
+The bundle is created on a separate machine; see **[Creating an offline bundle](#creating-an-offline-bundle)** below.
 
 ---
 
@@ -114,7 +111,39 @@ The first boot will:
 - Load the Docker images (~80 MB app + ~160 MB MySQL)
 - Start MySQL and wait for it to be healthy
 - Run database migrations automatically
-- Seed demo data (20 projects, 4 users)
+- Seed demo data (20 projects, 4 users) if `RUN_SEED=1` is set
+
+## Creating an offline bundle
+
+Do this on a workstation with internet, then transfer the resulting `.tar.gz` to the offline server.
+
+```bash
+# 1. Pull the multi-arch image (or pin to a specific stable version)
+docker pull ghcr.io/fvisic/projectstatusapp:latest
+docker pull mysql:8.4
+
+# Note: --platform may be specified if the target is a different arch:
+#   docker pull --platform linux/amd64 ghcr.io/fvisic/projectstatusapp:latest
+
+# 2. Save images to compressed tarballs
+docker save ghcr.io/fvisic/projectstatusapp:latest | gzip > projectstatus-app.tar.gz
+docker save mysql:8.4 | gzip > mysql-8.4.tar.gz
+
+# 3. Grab the compose + env files
+curl -O https://raw.githubusercontent.com/fvisic/ProjectStatusApp/main/docker-compose.yml
+curl -O https://raw.githubusercontent.com/fvisic/ProjectStatusApp/main/.env.production.example
+mv .env.production.example .env
+
+# 4. Edit docker-compose.yml to point at the local image name (so Docker doesn't try to pull again)
+sed -i 's|image: projectstatus:latest|image: ghcr.io/fvisic/projectstatusapp:latest|' docker-compose.yml
+
+# 5. Bundle everything together
+mkdir -p projectstatus-offline
+mv projectstatus-app.tar.gz mysql-8.4.tar.gz docker-compose.yml .env projectstatus-offline/
+tar czf projectstatus-offline.tar.gz projectstatus-offline/
+```
+
+Resulting `projectstatus-offline.tar.gz` is what gets shipped to the air-gapped target. On that target, follow **Path B** above.
 
 ## Default Users
 
@@ -243,15 +272,15 @@ rm -rf data/
 
 ### Backup
 ```bash
-docker exec projectstatus-db mysqldump -u projectstatus -p'Pr0jectStatus!2026' projectstatus | gzip > backup_$(date +%Y%m%d).sql.gz
+docker exec projectstatus-db mysqldump -u projectstatus -p"$DB_PASSWORD" projectstatus | gzip > backup_$(date +%Y%m%d).sql.gz
 ```
 
 ### Restore
 ```bash
-gunzip -c backup_20260415.sql.gz | docker exec -i projectstatus-db mysql -u projectstatus -p'Pr0jectStatus!2026' projectstatus
+gunzip -c backup_20260415.sql.gz | docker exec -i projectstatus-db mysql -u projectstatus -p"$DB_PASSWORD" projectstatus
 ```
 
-**Note:** If you changed `DB_PASSWORD` in `.env`, use your password instead of `Pr0jectStatus!2026`.
+**Note:** The example above reads the password from a shell variable. Set it first (`export DB_PASSWORD="..."`), or substitute your actual password inline. Never commit a real password into a script.
 
 ### Automatic daily backup (Linux)
 
@@ -262,7 +291,7 @@ To back up every night at 23:00:
 crontab -e
 
 # Add this line (adjust the path to your installation directory):
-0 23 * * * cd /path/to/projectstatus-offline && docker exec projectstatus-db mysqldump -u projectstatus -p'Pr0jectStatus!2026' projectstatus | gzip > backups/backup_$(date +\%Y\%m\%d).sql.gz && find backups/ -name "backup_*.sql.gz" -mtime +14 -delete
+0 23 * * * cd /path/to/projectstatus-offline && docker exec projectstatus-db mysqldump -u projectstatus -p"$DB_PASSWORD" projectstatus | gzip > backups/backup_$(date +\%Y\%m\%d).sql.gz && find backups/ -name "backup_*.sql.gz" -mtime +14 -delete
 ```
 
 This keeps the last 14 days of backups and automatically deletes older ones.
@@ -522,7 +551,7 @@ Wait 30 seconds and refresh. First boot takes longer while MySQL initializes.
 4. Try from the server itself first: `curl http://localhost:8080`
 
 **Images fail to load with "exec format error"**
-Your machine is not x86_64. Run `uname -m` to check. These images only work on x86_64 (amd64) machines.
+The image is multi-arch (amd64 + arm64), so this should be rare. If you built an offline tarball on a different architecture than your target, re-create it with `docker pull --platform=linux/<target-arch>` first (see the "Creating an offline bundle" section).
 
 ## System Requirements by User Count
 
