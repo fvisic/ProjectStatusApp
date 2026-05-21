@@ -9,4 +9,7 @@ services:
       - ./config:/app/config
       - ./routes:/app/routes
       - ./database:/app/database
+      - ./vendor:/app/vendor
+      - ./composer.json:/app/composer.json
+      - ./composer.lock:/app/composer.lock
       - ./docker/php-dev.ini:/usr/local/etc/php/conf.d/zz-dev.ini
