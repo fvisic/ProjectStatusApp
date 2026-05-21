@@ -189,6 +189,35 @@ DB_PASSWORD=YourNewPassword
 DB_ROOT_PASSWORD=YourNewRootPassword
 ```
 
+### Microsoft Entra ID (Azure AD) SSO — optional
+
+**Requires internet.** Entra OAuth runs against `login.microsoftonline.com`, so this is the only auth method that does **not** work in a fully offline deployment. Leave the four variables blank to disable — the "Sign in with Microsoft" button on `/login` only renders when all three of `MICROSOFT_ENTRA_SSO_TENANT_ID`, `_CLIENT_ID`, `_CLIENT_SECRET` are set. Existing email / passkey / 2FA flows continue to work unchanged.
+
+**1. Register the app in Azure**
+- Azure Portal → **App registrations** → **New registration**
+- Authentication → Web platform → Redirect URI: **`https://your-domain/sso/microsoft/web/callback`** (the path is fixed — must include `/sso/microsoft/web/callback`)
+- Certificates & secrets → **New client secret** → copy the *Value* immediately (only visible once; expires per your Azure tenant policy, typically 6–24 months)
+- From Overview, copy **Application (client) ID** and **Directory (tenant) ID**
+
+**2. Set in `.env` (must restart container to apply)**
+```env
+MICROSOFT_ENTRA_SSO_TENANT_ID=<directory-tenant-id-guid>
+MICROSOFT_ENTRA_SSO_CLIENT_ID=<application-client-id-guid>
+MICROSOFT_ENTRA_SSO_CLIENT_SECRET=<the-secret-value>
+MICROSOFT_ENTRA_SSO_REDIRECT_URI=https://your-domain/sso/microsoft/web/callback
+```
+
+`MICROSOFT_ENTRA_SSO_REDIRECT_URI` must **exactly** match the Redirect URI registered in Azure (scheme, host, port, path). Mismatch = OAuth rejects the callback.
+
+**3. Behavior on first SSO login**
+- Looks up `users` by `email`
+- If a user with that email exists → links Microsoft identity to the existing account
+- If not → auto-creates a verified user (`auto_register: true` in `config/microsoft-entra-sso.php` — set `false` to require pre-existing accounts only)
+
+**Notes:**
+- Without credentials configured, `php artisan route:list` and direct hits to `/sso/microsoft/*` return errors because the upstream package validates config in its service constructor. This is harmless for normal traffic — the login UI hides the SSO routes from users until credentials are set.
+- For LAN deployments with a fake hostname (e.g. `ps.your-lan.local`), Entra requires HTTPS on the redirect URI. Use the nginx self-signed cert path in this document, or Caddy + a real domain.
+
 ## Managing the Application
 
 ```bash

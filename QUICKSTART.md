@@ -163,6 +163,25 @@ docker compose exec app php artisan app:create-admin
 
 ---
 
+## Microsoft Entra ID SSO (optional)
+
+To enable the "Sign in with Microsoft" button on `/login`, set all four `MICROSOFT_ENTRA_SSO_*` variables in `.env` and restart the container:
+
+```env
+MICROSOFT_ENTRA_SSO_TENANT_ID=<directory-tenant-id>
+MICROSOFT_ENTRA_SSO_CLIENT_ID=<application-client-id>
+MICROSOFT_ENTRA_SSO_CLIENT_SECRET=<client-secret-value>
+MICROSOFT_ENTRA_SSO_REDIRECT_URI=https://your-domain/sso/microsoft/web/callback
+```
+
+The redirect URI in `.env` must **exactly** match the Redirect URI you register in **Azure Portal → App registrations → Authentication → Web** (scheme, host, port, path included). The path `/sso/microsoft/web/callback` is fixed by the app — register that exact URL in Azure.
+
+Leave the variables blank to skip — the button is hidden, existing email / passkey / 2FA flows are unaffected.
+
+Full Azure setup walkthrough: [INSTALL.md → Microsoft Entra ID (Azure AD) SSO](INSTALL.md#microsoft-entra-id-azure-ad-sso--optional).
+
+---
+
 ## Demo data (optional)
 
 To start with demo projects and users, set the following in `.env` **before the first boot**:
@@ -195,9 +214,11 @@ docker compose up -d  # restart (migrations run automatically)
 
 ## Docker image
 
-Multi-platform (amd64 + arm64) — works on Mac M1/M2/M3, Intel, and Linux servers.
+Multi-platform (amd64 + arm64) — works on Mac M1/M2/M3, Intel, and Linux servers. Built on `php:8.4-fpm-alpine` + nginx + supervisor.
 
 ```
 ghcr.io/fvisic/projectstatusapp:latest
-ghcr.io/fvisic/projectstatusapp:v1.2.0
+ghcr.io/fvisic/projectstatusapp:1.1.0
 ```
+
+Pre-release builds (release candidates) are tagged `vX.Y.Z-rc.N` and **do not** update the `:latest` tag — pull them by their explicit version tag.

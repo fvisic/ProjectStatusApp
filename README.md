@@ -1,5 +1,21 @@
 # Project Status
 
+[![Latest release](https://img.shields.io/github/v/release/fvisic/ProjectStatusApp?display_name=tag&sort=semver)](https://github.com/fvisic/ProjectStatusApp/releases/latest)
+[![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL_3.0-blue.svg)](LICENSE)
+[![CI](https://github.com/fvisic/ProjectStatusApp/actions/workflows/ci.yml/badge.svg)](https://github.com/fvisic/ProjectStatusApp/actions/workflows/ci.yml)
+[![Docker](https://github.com/fvisic/ProjectStatusApp/actions/workflows/docker.yml/badge.svg)](https://github.com/fvisic/ProjectStatusApp/actions/workflows/docker.yml)
+[![Tests](https://img.shields.io/badge/tests-367_passing-brightgreen.svg)](#)
+
+[![PHP](https://img.shields.io/badge/PHP-8.4-777BB4.svg?logo=php&logoColor=white)](https://www.php.net/)
+[![Laravel](https://img.shields.io/badge/Laravel-13-FF2D20.svg?logo=laravel&logoColor=white)](https://laravel.com/)
+[![Livewire](https://img.shields.io/badge/Livewire-3-FB70A9.svg)](https://livewire.laravel.com/)
+[![MySQL](https://img.shields.io/badge/MySQL-8.4-4479A1.svg?logo=mysql&logoColor=white)](https://www.mysql.com/)
+
+[![Docker image](https://img.shields.io/badge/ghcr.io-projectstatusapp-2496ED.svg?logo=docker&logoColor=white)](https://github.com/fvisic/ProjectStatusApp/pkgs/container/projectstatusapp)
+[![Multi-arch](https://img.shields.io/badge/arch-amd64_%C2%B7_arm64-2496ED.svg)](#)
+[![i18n](https://img.shields.io/badge/i18n-EN_%C2%B7_DE_%C2%B7_HR-success.svg)](#)
+[![Auth](https://img.shields.io/badge/auth-Password_%C2%B7_2FA_%C2%B7_Passkey_%C2%B7_Microsoft_SSO-informational.svg)](#)
+
 **Portfolio health at a glance — for teams already drowning in Jira tickets.**
 
 You have Jira. You have Teams. You might even have standups. And still — on any given Monday morning — you can't answer: *Is the EU funds project on track? What's the real delivery date for that enterprise client? Which of our 10 active initiatives is the biggest risk right now?*
@@ -40,7 +56,7 @@ It's not a Jira replacement. It runs alongside it — one tab for your ticket ba
 | Frontend  | Livewire 3, Tailwind CSS 3, Alpine.js|
 | Charts    | Chart.js 4                           |
 | Database  | MySQL 8.4                            |
-| Auth      | TOTP 2FA, WebAuthn (passkeys)        |
+| Auth      | TOTP 2FA, WebAuthn (passkeys), Microsoft Entra SSO |
 | i18n      | 3 languages (HR, EN, DE)             |
 | Tests     | PHPUnit, Playwright                  |
 | Deploy    | Docker (nginx + PHP-FPM)             |
@@ -56,6 +72,7 @@ It's not a Jira replacement. It runs alongside it — one tab for your ticket ba
 - Admin impersonation
 - Login with email or username
 - TOTP 2FA and WebAuthn passkey authentication
+- Microsoft Entra ID (Azure AD) SSO — optional, opt-in per-deployment
 - Excel/PDF export, portfolio PDF reports
 - Email notifications and weekly reports
 - Project snapshots and history diffing
@@ -153,6 +170,30 @@ WEBAUTHN_ORIGINS=https://projectstatus.local
 ## TOTP 2FA in Offline Mode
 
 Fully offline. TOTP is `HMAC-SHA1(shared_secret, time / 30s)` - pure local crypto. QR code is generated server-side as inline SVG. Only caveat: server clock must be within ~30s of clients (use an internal NTP server on LAN).
+
+## Microsoft Entra ID (Azure AD) SSO
+
+Optional. **Requires internet** — Entra OAuth runs against `login.microsoftonline.com`, so this is the only auth method that doesn't work offline.
+
+**Opt-in per deployment.** Leave the four `MICROSOFT_ENTRA_SSO_*` env vars unset and the "Sign in with Microsoft" button never renders on `/login`; existing email / passkey / 2FA flows are unaffected.
+
+**Required `.env`:**
+
+```env
+MICROSOFT_ENTRA_SSO_TENANT_ID=<your-tenant-guid>
+MICROSOFT_ENTRA_SSO_CLIENT_ID=<your-app-client-id>
+MICROSOFT_ENTRA_SSO_CLIENT_SECRET=<your-client-secret>
+MICROSOFT_ENTRA_SSO_REDIRECT_URI=https://your-domain/sso/microsoft/web/callback
+```
+
+**Azure App Registration (one-time):**
+1. Azure Portal → App registrations → New registration.
+2. Authentication → Web platform → Redirect URI: **`https://your-domain/sso/microsoft/web/callback`** (must exactly match `MICROSOFT_ENTRA_SSO_REDIRECT_URI`, including port if any).
+3. Certificates & secrets → New client secret → copy the **Value** (visible once).
+4. Copy Tenant ID and Application (client) ID from the Overview page.
+5. Paste all four into `.env` and restart the container.
+
+**Behavior on first SSO login**: looks up `users` by `email`. If found, links Microsoft identity to existing account. If not found, auto-creates a verified user (`auto_register: true` in `config/microsoft-entra-sso.php` — set `false` to require pre-existing accounts).
 
 ## Docker Installation
 
