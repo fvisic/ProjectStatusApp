@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.1] — 2026-05-22
+
+### Changed
+- Docker workflow now builds amd64 and arm64 on native runners in parallel (`ubuntu-latest` + `ubuntu-24.04-arm`) and merges into a multi-arch manifest. Drops QEMU emulation; wall time falls from ~25 min to ~5 min.
+- `docker-compose.override.yml` mounts `vendor/`, `composer.json`, and `composer.lock` so dev installs of new Composer packages are picked up by the running container without rebuilding the image.
+
+---
+
 ## [1.1.0] — 2026-05-21
 
 ### Added
@@ -63,7 +71,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Manager read-only view for projects they did not create
 - Username field on registration form
 
-[Unreleased]: https://github.com/fvisic/ProjectStatusApp/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/fvisic/ProjectStatusApp/compare/v1.1.1...HEAD
+[1.1.1]: https://github.com/fvisic/ProjectStatusApp/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/fvisic/ProjectStatusApp/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/fvisic/ProjectStatusApp/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/fvisic/ProjectStatusApp/releases/tag/v1.0.0
