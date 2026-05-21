@@ -30,7 +30,7 @@ RUN composer install \
     --ignore-platform-req=ext-bcmath
 
 # ---------- Stage 3: Runtime ----------
-FROM php:8.5-fpm-alpine AS runtime
+FROM php:8.4-fpm-alpine AS runtime
 
 ENV APP_ENV=production \
     APP_DEBUG=false \

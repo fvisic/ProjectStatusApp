@@ -11,6 +11,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.2] — 2026-05-22
+
+### Security
+- `phpoffice/phpspreadsheet` 1.30.0 → 1.30.4: fixes CVE-2026-34084 (SSRF/RCE in `IOFactory::load`), CVE-2026-40902 + CVE-2026-40863 (CPU DoS via unbounded row index), CVE-2026-40296 + CVE-2026-35453 (XSS via NumberFormat `@` substitution)
+- Symfony updates: `symfony/http-kernel` (CVE-2026-45075 — HEAD bypass of `#[IsGranted]`), `symfony/mailer` (CVE-2026-45068 — Sendmail argument injection), `symfony/mime` (CVE-2026-45070 + CVE-2026-45067 — header / CRLF injection), `symfony/routing` (CVE-2026-45065 — UrlGenerator route requirement bypass)
+
+### Changed
+- Dockerfile pinned to `php:8.4-fpm-alpine` (was 8.5). 8.5 was an outlier — CI workflow already uses 8.4, and `phpoffice/phpspreadsheet` 1.30.4 caps PHP at `<8.5`. `composer.json` now sets `config.platform.php = "8.4"` so dependency resolution matches the deploy target regardless of host PHP version.
+
+---
+
 ## [1.1.1] — 2026-05-22
 
 ### Changed
@@ -71,7 +82,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Manager read-only view for projects they did not create
 - Username field on registration form
 
-[Unreleased]: https://github.com/fvisic/ProjectStatusApp/compare/v1.1.1...HEAD
+[Unreleased]: https://github.com/fvisic/ProjectStatusApp/compare/v1.1.2...HEAD
+[1.1.2]: https://github.com/fvisic/ProjectStatusApp/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/fvisic/ProjectStatusApp/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/fvisic/ProjectStatusApp/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/fvisic/ProjectStatusApp/compare/v1.0.0...v1.0.1
